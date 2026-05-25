@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>漫集社 - {{comic.title}}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    .nav {
+      background-color: #fff;
+      padding: 18px 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #4A90E2;
+      letter-spacing: 2px;
+    }
+    .nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #444;
+    }
+    .read-wrap {
+      width: 85%;
+      margin: 40px auto;
+    }
+    .comic-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .comic-info h2 {
+      color: #4A90E2;
+      margin-bottom: 10px;
+    }
+    .tool-bar {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .tool-bar button {
+      margin: 0 8px;
+      padding: 9px 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #eaf3ff;
+      color: #4A90E2;
+      cursor: pointer;
+    }
+    .night {
+      background-color: #222;
+      color: #fff;
+    }
+    .img-box {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .img-box img {
+      max-width: 700px;
+      border-radius: 10px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    }
+    .comment-area {
+      margin-top: 50px;
+    }
+    .star {
+      color: #4A90E2;
+      font-size: 22px;
+      margin: 12px 0;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      outline: none;
+    }
+    textarea:focus {
+      border-color: #4A90E2;
+    }
+    .submit-btn {
+      padding: 12px 26px;
+      background-color: #4A90E2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <span class="logo">漫集社</span>
+    <a href="/">返回首页</a>
+  </div>
+  <div class="read-wrap">
+    <div class="comic-info">
+      <h2>{{comic.title}}</h2>
+      <p>作者：{{comic.author}} &nbsp;&nbsp; 分类：{{comic.category}} &nbsp;&nbsp; 状态：{{comic.status}}</p>
+    </div>
+    <div class="tool-bar">
+      <button>竖屏阅读</button>
+      <button>横屏阅读</button>
+      <button onclick="document.body.classList.toggle('night')">切换夜间模式</button>
+      <button>开启无广告</button>
+    </div>
+    <div class="img-box">
+      <img src="{{comic.cover}}">
+    </div>
+    <div class="comment-area">
+      <div class="star">⭐⭐⭐⭐⭐</div>
+      <h3>发表书评</h3>
+      <textarea placeholder="写下你的阅读心得与评价..."></textarea>
+      <button class="submit-btn">提交评论</button>
+    </div>
+  </div>
+</body>
+</html>

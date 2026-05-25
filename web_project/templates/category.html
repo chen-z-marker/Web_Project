@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>漫集社 - 漫画分类</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    .nav {
+      background-color: #fff;
+      padding: 18px 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #4A90E2;
+      letter-spacing: 2px;
+    }
+    .nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #444;
+    }
+    .sort-group {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .sort-item {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 6px;
+      background-color: #eaf3ff;
+      color: #4A90E2;
+      border-radius: 30px;
+      text-decoration: none;
+    }
+    .waterfall {
+      width: 90%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 22px;
+    }
+    .comic-card {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .comic-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    .card-text {
+      padding: 14px;
+    }
+    .card-text h4 {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .watch-btn {
+      padding: 6px 12px;
+      background-color: #4A90E2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <span class="logo">漫集社</span>
+    <a href="/">首页</a>
+  </div>
+  <div class="sort-group">
+    <a href="/category?cate=热血" class="sort-item">热血</a>
+    <a href="/category?cate=校园" class="sort-item">校园</a>
+    <a href="/category?cate=奇幻" class="sort-item">奇幻</a>
+    <a href="/category?cate=恋爱" class="sort-item">恋爱</a>
+    <a href="/category?cate=悬疑" class="sort-item">悬疑</a>
+    <a href="/category?cate=科幻" class="sort-item">科幻</a>
+    <a href="/category?cate=治愈" class="sort-item">治愈</a>
+    <a href="/category?cate=古风" class="sort-item">古风</a>
+    <a href="/category?cate=竞技" class="sort-item">竞技</a>
+    <a href="/category" class="sort-item">全部漫画</a>
+  </div>
+  <div class="waterfall">
+    {% for item in comics %}
+    <div class="comic-card">
+      <img src="{{item.cover}}">
+      <div class="card-text">
+        <h4>{{item.title}}</h4>
+        <p>{{item.author}}</p>
+        <a href="/read/{{item.id}}">
+          <button class="watch-btn">观看漫画</button>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

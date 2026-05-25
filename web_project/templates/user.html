@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>漫集社 - 个人中心</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    body {
+      background-color: #f5f7fa;
+    }
+    .nav {
+      background-color: #fff;
+      padding: 18px 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #4A90E2;
+      letter-spacing: 2px;
+    }
+    .nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #444;
+    }
+    .user-box {
+      width: 600px;
+      margin: 80px auto;
+      background-color: #fff;
+      padding: 50px;
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .user-box h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
+    .user-desc {
+      font-size: 16px;
+      color: #666;
+      line-height: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <span class="logo">漫集社</span>
+    <a href="/">首页</a>
+    <a href="/logout">退出登录</a>
+  </div>
+  <div class="user-box">
+    <h2>欢迎你，{{name}}</h2>
+    <div class="user-desc">
+      <p>这里是你的专属个人中心</p>
+      <p>可查看我的书架、阅读记录、收藏漫画</p>
+    </div>
+  </div>
+</body>
+</html>
