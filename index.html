@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漫次元 - 漫画追番收藏平台</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    /* 主色调：黑、白、浅粉、淡蓝 */
+    :root {
+      --black: #222;
+      --white: #fff;
+      --pink: #fdd1e1;
+      --blue: #d1eaff;
+      --gray: #f5f5f5;
+    }
+
+    body {
+      background: var(--gray);
+      color: var(--black);
+    }
+
+    /* 导航栏 */
+    .navbar {
+      background: var(--white);
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--black);
+    }
+
+    .logo span {
+      color: var(--pink);
+    }
+
+    .nav-menu a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    .nav-menu a:hover {
+      color: var(--blue);
+    }
+
+    /* 搜索栏 */
+    .search-box {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 30px;
+      outline: none;
+      font-size: 16px;
+      background: var(--white);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* 分类标签 */
+    .category {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 6px 14px;
+      background: var(--white);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tag.active {
+      background: var(--blue);
+    }
+
+    .tag:hover {
+      background: var(--pink);
+    }
+
+    /* 漫画容器 - 卡片瀑布流 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    /* 漫画卡片 */
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+
+    .card-info {
+      padding: 12px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .collect-btn {
+      padding: 5px 10px;
+      background: var(--pink);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* 板块标题 */
+    .section-title {
+      max-width: 1200px;
+      margin: 30px auto 15px;
+      padding: 0 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--black);
+    }
+
+    /* 阅读页样式 */
+    .read-page {
+      display: none;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: var(--white);
+      border-radius: 12px;
+    }
+
+    .read-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .read-tool {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tool-btn {
+      padding: 6px 12px;
+      background: var(--blue);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .comic-img {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    /* 评论区 */
+    .comment-area {
+      margin-top: 30px;
+    }
+
+    .comment-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .comment-list {
+      margin-top: 15px;
+    }
+
+    .comment-item {
+      padding: 10px;
+      background: var(--gray);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="navbar">
+  <div class="logo">漫<span>次元</span></div>
+  <div class="nav-menu">
+    <a href="#home">首页</a>
+    <a href="#collect">我的收藏</a>
+    <a href="#finish">完结专题</a>
+    <a href="#comment">评论交流</a>
+  </div>
+</div>
+
+<!-- 搜索 -->
+<div class="search-box">
+  <input type="text" class="search-input" placeholder="搜索漫画名称/作者/标签">
+</div>
+
+<!-- 分类 -->
+<div class="category">
+  <div class="tag active">全部</div>
+  <div class="tag">热血</div>
+  <div class="tag">治愈</div>
+  <div class="tag">校园</div>
+  <div class="tag">悬疑</div>
+  <div class="tag">科幻</div>
+  <div class="tag">日漫</div>
+  <div class="tag">国漫</div>
+  <div class="tag">韩漫</div>
+</div>
+
+<!-- 最新更新 -->
+<h2 class="section-title">最新更新</h2>
+<div class="container" id="comic-list">
+  <div class="card">
+    <img src="https://picsum.photos/200/280?1" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">星之轨迹</div>
+      <div class="card-desc">科幻 / 连载中</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://picsum.photos/200/280?2" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">夏日治愈</div>
+      <div class="card-desc">治愈 / 完结</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://picsum.photos/200/280?3" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">校园少年</div>
+      <div class="card-desc">校园 / 连载中</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://picsum.photos/200/280?4" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">悬疑迷宫</div>
+      <div class="card-desc">悬疑 / 完结</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+</div>
+
+<!-- 完结漫画专题 -->
+<h2 class="section-title" id="finish">完结漫画专题</h2>
+<div class="container">
+  <div class="card">
+    <img src="https://picsum.photos/200/280?5" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">经典神作</div>
+      <div class="card-desc">高分完结 / 全章节</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://picsum.photos/200/280?6" alt="漫画封面">
+    <div class="card-info">
+      <div class="card-title">老漫合集</div>
+      <div class="card-desc">怀旧经典 / 完结</div>
+      <button class="collect-btn">加入收藏</button>
+    </div>
+  </div>
+</div>
+
+<!-- 阅读页面 -->
+<div class="read-page" id="readPage">
+  <div class="read-header">
+    <h3>漫画阅读</h3>
+    <div class="read-tool">
+      <button class="tool-btn" onclick="switchMode()">夜间模式</button>
+      <button class="tool-btn" onclick="backHome()">返回首页</button>
+    </div>
+  </div>
+  <img src="https://picsum.photos/900/1200" class="comic-img" alt="漫画内容">
+  <img src="https://picsum.photos/900/1201" class="comic-img" alt="漫画内容">
+
+  <!-- 评论区 -->
+  <div class="comment-area">
+    <h4>漫画评论 & 评分</h4>
+    <input type="text" class="comment-input" placeholder="写下你的评论...">
+    <button style="padding:6px 12px;background:var(--blue);border:none;border-radius:6px;">发布评论</button>
+    <div class="comment-list">
+      <div class="comment-item">用户1：太好看了！剧情超棒！</div>
+      <div class="comment-item">用户2：画风治愈，强烈推荐～</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 收藏功能
+  const collectBtns = document.querySelectorAll('.collect-btn');
+  collectBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.innerText = btn.innerText === '加入收藏' ? '已收藏' : '加入收藏';
+      btn.style.background = btn.innerText === '已收藏' ? '#d1eaff' : '#fdd1e1';
+    });
+  });
+
+  // 卡片点击进入阅读页
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      if(!e.target.classList.contains('collect-btn')){
+        document.querySelector('.container').style.display = 'none';
+        document.querySelectorAll('.section-title').forEach(i=>i.style.display='none');
+        document.getElementById('readPage').style.display = 'block';
+      }
+    });
+  });
+
+  // 返回首页
+  function backHome() {
+    document.querySelector('.container').style.display = 'grid';
+    document.querySelectorAll('.section-title').forEach(i=>i.style.display='block');
+    document.getElementById('readPage').style.display = 'none';
+  }
+
+  // 夜间模式（简易版）
+  function switchMode() {
+    const body = document.body;
+    body.style.background = body.style.background === '#222' ? '#f5f5f5' : '#222';
+    body.style.color = body.style.color === '#fff' ? '#222' : '#fff';
+  }
+</script>
+</body>
+</html>
