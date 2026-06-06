@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>漫集社 - 个人中心</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    /* 全局背景，和首页/登录页保持一致 */
+    body {
+      background: url("/static/images/Background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+    }
+
+    /* 导航栏 */
+    .nav {
+      background-color: rgba(255,255,255,0.95);
+      padding: 18px 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #4A90E2;
+      letter-spacing: 2px;
+    }
+    .nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #444;
+      transition: color 0.2s;
+    }
+    .nav a:hover {
+      color: #4A90E2;
+    }
+
+    /* 主容器 */
+    .container {
+      display: flex;
+      width: 90%;
+      margin: 40px auto;
+      gap: 30px;
+    }
+
+    /* 侧边栏 */
+    .sidebar {
+      width: 220px;
+      background-color: rgba(255,255,255,0.95);
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      padding: 20px 0;
+    }
+    .sidebar .user-info {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .sidebar .avatar {
+      width: 80px;
+      height: 80px;
+      background-color: #4A90E2;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 30px;
+    }
+    .sidebar .username {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    .sidebar-menu {
+      list-style: none;
+      margin-top: 20px;
+    }
+    .sidebar-menu li {
+      padding: 12px 30px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #555;
+    }
+    .sidebar-menu li:hover,
+    .sidebar-menu li.active {
+      background-color: #4A90E2;
+      color: #fff;
+    }
+
+    /* 内容区域 */
+    .content {
+      flex: 1;
+      background-color: rgba(255,255,255,0.95);
+      border-radius: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      padding: 30px;
+      min-height: 500px;
+    }
+    .content h2 {
+      color: #4A90E2;
+      margin-bottom: 20px;
+    }
+    .content-desc {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .content-section {
+      display: none;
+    }
+    .content-section.active {
+      display: block;
+    }
+
+    /* 漫画卡片样式 */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .mini-card {
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .mini-card:hover {
+      transform: translateY(-3px);
+    }
+    .mini-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    .mini-card .info {
+      padding: 10px;
+      text-align: center;
+    }
+    .mini-card .title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    .mini-card .status {
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* 空状态提示 */
+    .empty-tip {
+      text-align: center;
+      padding: 60px 0;
+      color: #999;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <span class="logo">漫集社</span>
+    <a href="/">首页</a>
+    <a href="/logout">退出登录</a>
+  </div>
+
+  <div class="container">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="avatar">{{name|first|upper}}</div>
+        <div class="username">{{name}}</div>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active" data-target="bookshelf">我的书架</li>
+        <li data-target="history">阅读记录</li>
+        <li data-target="favorites">我的收藏</li>
+      </ul>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+      <!-- 我的书架 -->
+      <div class="content-section active" id="bookshelf">
+        <h2>我的书架</h2>
+        <p class="content-desc">你收藏并在追更的漫画</p>
+        {% if bookshelf %}
+        <div class="comic-grid">
+          {% for comic in bookshelf %}
+          <a href="/read/{{comic.id}}" style="text-decoration: none;color: inherit;">
+            <div class="mini-card">
+              <img src="{{comic.cover}}" alt="{{comic.title}}">
+              <div class="info">
+                <div class="title">{{comic.title}}</div>
+                <div class="status">上次看到：{{comic.last_chapter}}</div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-tip">
+          你的书架还是空的，快去首页添加吧！
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- 阅读记录 -->
+      <div class="content-section" id="history">
+        <h2>阅读记录</h2>
+        <p class="content-desc">你最近看过的漫画</p>
+        {% if history %}
+        <div class="comic-grid">
+          {% for comic in history %}
+          <a href="/read/{{comic.id}}" style="text-decoration: none;color: inherit;">
+            <div class="mini-card">
+              <img src="{{comic.cover}}" alt="{{comic.title}}">
+              <div class="info">
+                <div class="title">{{comic.title}}</div>
+                <div class="status">阅读时间：{{comic.read_time}}</div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-tip">
+          还没有阅读记录，快去看漫画吧！
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- 我的收藏 -->
+      <div class="content-section" id="favorites">
+        <h2>我的收藏</h2>
+        <p class="content-desc">你收藏的漫画</p>
+        {% if favorites %}
+        <div class="comic-grid">
+          {% for comic in favorites %}
+          <a href="/read/{{comic.id}}" style="text-decoration: none;color: inherit;">
+            <div class="mini-card">
+              <img src="{{comic.cover}}" alt="{{comic.title}}">
+              <div class="info">
+                <div class="title">{{comic.title}}</div>
+                <div class="status">收藏时间：{{comic.fav_time}}</div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-tip">
+          还没有收藏任何漫画，快去收藏喜欢的作品吧！
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 侧边栏切换功能
+    const menuItems = document.querySelectorAll('.sidebar-menu li');
+    const sections = document.querySelectorAll('.content-section');
+
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // 移除所有激活状态
+        menuItems.forEach(i => i.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+
+        // 添加当前激活状态
+        item.classList.add('active');
+        const target = item.getAttribute('data-target');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

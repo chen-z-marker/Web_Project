@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ comic.title }} - &#28459;&#30011;&#35814;&#24773;</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: url("/static/images/Background.jpg") no-repeat center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            color: #333;
+        }
+        .nav {
+            background: rgba(255,255,255,0.92);
+            padding: 16px 50px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .nav a {
+            text-decoration: none;
+            color: #333;
+            margin-right: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1180px;
+            margin: 30px auto;
+            background: rgba(255,255,255,0.94);
+            border-radius: 14px;
+            padding: 30px;
+            text-align: center;
+        }
+        .reader-controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0,0,0,0.08);
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        .reader-controls button,
+        .reader-controls a {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #4A90E2;
+            color: white;
+            font-size: 15px;
+            text-decoration: none;
+        }
+        .comic-cover {
+            width: 260px;
+            max-width: 70vw;
+            height: auto;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+        }
+        .comic-title {
+            font-size: 26px;
+            color: #222;
+            margin: 8px 0 20px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 34px;
+        }
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-collect { background-color: #ff6677; }
+        .btn-shelf { background-color: #4A90E2; }
+        .section-title {
+            margin: 0 0 16px;
+            text-align: left;
+            font-size: 22px;
+        }
+        .chapter-section {
+            margin: 20px 0 38px;
+            text-align: left;
+        }
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .chapter-card {
+            display: block;
+            padding: 18px;
+            border: 1px solid rgba(74,144,226,0.25);
+            border-radius: 8px;
+            background: rgba(248,252,255,0.92);
+            color: #333;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .chapter-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .chapter-card strong {
+            display: block;
+            color: #1f5d99;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+        .chapter-card span {
+            color: #666;
+            font-size: 14px;
+        }
+        .comment-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+        .star-rating {
+            color: #ddd;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .star-rating .star.active { color: #ffc107; }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            resize: none;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .submit-btn {
+            background-color: #4A90E2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .night-mode {
+            background-color: #1a1a1a !important;
+            color: #eee !important;
+        }
+        .night-mode .container {
+            background-color: rgba(42,42,42,0.96) !important;
+        }
+        .night-mode .comic-title,
+        .night-mode .section-title,
+        .night-mode .comment-section p {
+            color: #eee !important;
+        }
+        .night-mode .chapter-card {
+            background: #333;
+            color: #eee;
+            border-color: #555;
+        }
+        .night-mode .chapter-card strong { color: #8fc6ff; }
+        .night-mode .chapter-card span { color: #bbb; }
+        .night-mode textarea {
+            background-color: #333;
+            color: #eee;
+            border-color: #444;
+        }
+        .night-mode .submit-btn { background-color: #555; }
+        @media (max-width: 640px) {
+            .nav { padding: 14px 20px; }
+            .container {
+                width: 94%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">&#39318;&#39029;</a>
+        {% if is_login %}
+        <a href="/user">&#20010;&#20154;&#20013;&#24515;</a>
+        <a href="/logout">&#36864;&#20986;&#30331;&#24405;</a>
+        {% else %}
+        <a href="/login">&#30331;&#24405;</a>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="reader-controls">
+            <button id="toggleNightMode">&#24320;&#21551;&#22812;&#38388;&#27169;&#24335;</button>
+            {% if chapters %}
+            <a href="/read/{{ comic.id }}/chapter/{{ chapters[0].number }}">&#31435;&#21363;&#38405;&#35835;&#31532;&#19968;&#35805;</a>
+            {% endif %}
+        </div>
+
+        <img src="{{ comic.cover }}" alt="{{ comic.title }} cover" class="comic-cover">
+        <h1 class="comic-title">{{ comic.title }}</h1>
+
+        {% if is_login %}
+        <div class="action-buttons">
+            {% if is_collect %}
+            <a href="/add_fav/{{ comic.id }}" class="btn btn-collect">&#21462;&#28040;&#25910;&#34255;</a>
+            {% else %}
+            <a href="/add_fav/{{ comic.id }}" class="btn btn-collect">+&#25910;&#34255;&#28459;&#30011;</a>
+            {% endif %}
+            {% if is_shelf %}
+            <a href="/add_shelf/{{ comic.id }}" class="btn btn-shelf">&#31227;&#20986;&#20070;&#26550;</a>
+            {% else %}
+            <a href="/add_shelf/{{ comic.id }}" class="btn btn-shelf">&#21152;&#20837;&#20070;&#26550;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="chapter-section">
+            <h2 class="section-title">&#31456;&#33410;&#30446;&#24405;</h2>
+            <div class="chapter-grid">
+                {% for chapter in chapters %}
+                <a class="chapter-card" href="/read/{{ comic.id }}/chapter/{{ chapter.number }}">
+                    <strong>{{ chapter.title }}</strong>
+                    <span>{{ chapter.desc }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="comment-section">
+            <h3>&#21457;&#34920;&#20070;&#35780;</h3>
+            <div class="star-rating">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+                <span>&#65288;&#35831;&#28857;&#20987;&#26143;&#26143;&#35780;&#20998;&#65289;</span>
+            </div>
+            <textarea placeholder="&#20889;&#19979;&#20320;&#30340;&#38405;&#35835;&#24515;&#24471;&#19982;&#35780;&#20215;..." id="commentContent"></textarea>
+            <button class="submit-btn" onclick="submitComment()">&#25552;&#20132;&#35780;&#35770;</button>
+
+            <div class="comment-list" style="margin-top: 30px;">
+                <h3>&#29992;&#25143;&#35780;&#35770;</h3>
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+                            <span style="font-weight: bold;">{{ comment.username }}</span>
+                            <span style="color: #999; font-size: 14px;">{{ comment.create_time }}</span>
+                        </div>
+                        <div style="color: #ffc107; margin-bottom: 5px;">
+                            {% for i in range(comment.score) %}&#9733;{% endfor %}
+                            {% for i in range(5 - comment.score) %}&#9734;{% endfor %}
+                        </div>
+                        <p style="color: #333; margin: 0;">{{ comment.content }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #999; text-align: center; padding: 20px 0;">&#26242;&#26080;&#35780;&#35770;&#65292;&#24555;&#26469;&#25250;&#27801;&#21457;&#21543;&#65281;</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedNightMode = localStorage.getItem('nightMode') === 'true';
+            if (savedNightMode) {
+                document.body.classList.add('night-mode');
+                document.getElementById('toggleNightMode').textContent = '\u5173\u95ed\u591c\u95f4\u6a21\u5f0f';
+            }
+        });
+
+        document.getElementById('toggleNightMode').addEventListener('click', function() {
+            document.body.classList.toggle('night-mode');
+            const isNightMode = document.body.classList.contains('night-mode');
+            localStorage.setItem('nightMode', isNightMode);
+            this.textContent = isNightMode ? '\u5173\u95ed\u591c\u95f4\u6a21\u5f0f' : '\u5f00\u542f\u591c\u95f4\u6a21\u5f0f';
+        });
+
+        let selectedScore = 0;
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                selectedScore = parseInt(star.dataset.value);
+                document.querySelectorAll('.star').forEach((s, index) => {
+                    s.classList.toggle('active', index < selectedScore);
+                });
+            });
+        });
+
+        function submitComment() {
+            const content = document.getElementById('commentContent').value;
+            if (!selectedScore) {
+                alert('\u8bf7\u5148\u9009\u62e9\u8bc4\u5206\uff01');
+                return;
+            }
+            if (!content.trim()) {
+                alert('\u8bc4\u8bba\u5185\u5bb9\u4e0d\u80fd\u4e3a\u7a7a\uff01');
+                return;
+            }
+            fetch(`/submit_comment/{{ comic.id }}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({score: selectedScore, content: content})
+            }).then(res => res.json())
+              .then(data => {
+                  if (data.success) {
+                      alert('\u8bc4\u8bba\u63d0\u4ea4\u6210\u529f\uff01');
+                      location.reload();
+                  } else {
+                      alert(data.message);
+                  }
+              });
+        }
+    </script>
+</body>
+</html>

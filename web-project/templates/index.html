@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>漫集社 - 二次元追漫平台</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background: url("/static/images/Background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .nav {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 18px 50px;
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: bold;
+      color: #5DADE2;
+      letter-spacing: 3px;
+      text-shadow: 0 0 8px rgba(93, 173, 226, 0.4);
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #333;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .nav a:hover {
+      color: #5DADE2;
+      transform: translateY(-2px);
+    }
+
+    .search-box {
+      width: 650px;
+      margin: 40px auto;
+      display: flex;
+      gap: 10px;
+    }
+    .search-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.85);
+    }
+    .search-input:focus {
+      border-color: #5DADE2;
+      box-shadow: 0 0 6px rgba(93, 173, 226, 0.3);
+    }
+    .btn {
+      padding: 14px 24px;
+      background-color: #5DADE2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background-color: #3498DB;
+    }
+
+    .sort-group {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .sort-item {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 6px;
+      background-color: rgba(93, 173, 226, 0.1);
+      color: #5DADE2;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .sort-item:hover {
+      background-color: #5DADE2;
+      color: #fff;
+    }
+
+    /* 核心布局：每行5个 + 卡片整体高度一致 */
+    .waterfall {
+      width: 94%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      padding: 20px 0;
+    }
+
+    .comic-card {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease;
+      /* 固定卡片整体高度，保证所有卡片大小一致 */
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comic-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* 图片高度固定，占卡片 65% */
+    .comic-card img {
+      width: 100%;
+      height: 65%;
+      object-fit: cover;
+    }
+
+    /* 文字区域高度固定，保证所有卡片白色部分一样高 */
+    .card-text {
+      height: 35%;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-text h4 {
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-text p {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .watch-btn {
+      width: 100%;
+      padding: 7px 12px;
+      background-color: #5DADE2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .watch-btn:hover {
+      background-color: #3498DB;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <span class="logo">漫集社</span>
+    <a href="/">首页</a>
+    <a href="/category">分类</a>
+    <a href="/user">个人中心</a>
+    <a href="/login">登录</a>
+    <a href="/register">注册</a>
+    <a href="/logout">退出</a>
+  </div>
+
+  <form class="search-box" action="/search" method="post">
+    <input class="search-input" name="key" placeholder="搜索漫画名称/作者">
+    <button class="btn">搜索</button>
+  </form>
+
+  <div class="sort-group">
+    <a href="/category" class="sort-item">全部漫画</a>
+    <a href="/category?cate=热血" class="sort-item">热血</a>
+    <a href="/category?cate=校园" class="sort-item">校园</a>
+    <a href="/category?cate=奇幻" class="sort-item">奇幻</a>
+    <a href="/category?cate=恋爱" class="sort-item">恋爱</a>
+    <a href="/category?cate=悬疑" class="sort-item">悬疑</a>
+    <a href="/category?cate=科幻" class="sort-item">科幻</a>
+  </div>
+
+  <div class="waterfall">
+    {% for item in comics %}
+    <div class="comic-card">
+      <img src="{{item.cover}}">
+      <div class="card-text">
+        <div>
+          <h4>{{item.title}}</h4>
+          <p>作者：{{item.author}}</p>
+          <p>状态：{{item.status}}</p>
+        </div>
+        <a href="/read/{{item.id}}">
+          <button class="watch-btn">开始阅读</button>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

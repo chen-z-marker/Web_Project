@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ comic.title }} - {{ chapter.title }}</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f2f5f8;
+            color: #222;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 14px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .topbar a,
+        .topbar button {
+            border: none;
+            border-radius: 6px;
+            background: #4A90E2;
+            color: white;
+            padding: 9px 16px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .topbar .plain-link {
+            background: transparent;
+            color: #333;
+            padding-left: 0;
+        }
+        .chapter-title {
+            width: 100%;
+            text-align: center;
+            padding: 26px 20px 18px;
+        }
+        .chapter-title h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+        .chapter-title p {
+            margin: 0;
+            color: #666;
+        }
+        .comic-content {
+            width: min(900px, 94vw);
+            margin: 0 auto 36px;
+        }
+        .page {
+            margin: 0 auto 18px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+        }
+        .page img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .bottom-nav {
+            width: min(900px, 94vw);
+            margin: 0 auto 50px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .bottom-nav a {
+            padding: 10px 18px;
+            border-radius: 6px;
+            color: white;
+            background: #4A90E2;
+            text-decoration: none;
+        }
+        .landscape-mode .comic-content {
+            width: min(1180px, 96vw);
+        }
+        .landscape-mode .page img {
+            max-height: 92vh;
+            width: auto;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .night-mode {
+            background: #151515;
+            color: #eee;
+        }
+        .night-mode .topbar {
+            background: rgba(32,32,32,0.96);
+        }
+        .night-mode .topbar .plain-link,
+        .night-mode .chapter-title p {
+            color: #ddd;
+        }
+        .night-mode .page {
+            background: #222;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+        }
+        @media (max-width: 640px) {
+            .topbar { padding: 12px 16px; }
+            .topbar a,
+            .topbar button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            .chapter-title h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body class="portrait-mode">
+    <div class="topbar">
+        <div class="nav-links">
+            <a class="plain-link" href="/">&#39318;&#39029;</a>
+            <a class="plain-link" href="/read/{{ comic.id }}">&#36820;&#22238;&#35814;&#24773;</a>
+        </div>
+        <div class="nav-links">
+            <button id="toggleOrientation">&#20999;&#25442;&#27178;&#23631;</button>
+            <button id="toggleNightMode">&#24320;&#21551;&#22812;&#38388;&#27169;&#24335;</button>
+            <button id="toggleAdMode">&#24320;&#21551;&#26080;&#24191;&#21578;&#27169;&#24335;</button>
+        </div>
+    </div>
+
+    <div class="chapter-title">
+        <h1>{{ comic.title }} - {{ chapter.title }}</h1>
+        <p>{{ chapter.desc }}</p>
+    </div>
+
+    <div class="comic-content">
+        {% for page in pages %}
+        <div class="page">
+            <img src="{{ page }}" alt="{{ comic.title }} {{ chapter.title }} page {{ loop.index }}">
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="bottom-nav">
+        {% if prev_chapter %}
+        <a href="/read/{{ comic.id }}/chapter/{{ prev_chapter.number }}">&#19978;&#19968;&#35805;</a>
+        {% endif %}
+        <a href="/read/{{ comic.id }}">&#30446;&#24405;</a>
+        {% if next_chapter %}
+        <a href="/read/{{ comic.id }}/chapter/{{ next_chapter.number }}">&#19979;&#19968;&#35805;</a>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedOrientation = localStorage.getItem('readerOrientation') || 'portrait';
+            const savedNightMode = localStorage.getItem('nightMode') === 'true';
+            const savedAdMode = localStorage.getItem('noAdMode') === 'true';
+
+            document.body.classList.remove('portrait-mode', 'landscape-mode');
+            document.body.classList.add(`${savedOrientation}-mode`);
+            document.getElementById('toggleOrientation').textContent =
+                savedOrientation === 'landscape' ? '\u5207\u6362\u7ad6\u5c4f' : '\u5207\u6362\u6a2a\u5c4f';
+
+            if (savedNightMode) {
+                document.body.classList.add('night-mode');
+                document.getElementById('toggleNightMode').textContent = '\u5173\u95ed\u591c\u95f4\u6a21\u5f0f';
+            }
+            if (savedAdMode) {
+                document.body.classList.add('no-ad-mode');
+                document.getElementById('toggleAdMode').textContent = '\u663e\u793a\u63d0\u793a';
+            }
+        });
+
+        document.getElementById('toggleOrientation').addEventListener('click', function() {
+            const body = document.body;
+            const isPortrait = body.classList.contains('portrait-mode');
+            body.classList.toggle('portrait-mode', !isPortrait);
+            body.classList.toggle('landscape-mode', isPortrait);
+            localStorage.setItem('readerOrientation', isPortrait ? 'landscape' : 'portrait');
+            this.textContent = isPortrait ? '\u5207\u6362\u7ad6\u5c4f' : '\u5207\u6362\u6a2a\u5c4f';
+        });
+
+        document.getElementById('toggleNightMode').addEventListener('click', function() {
+            document.body.classList.toggle('night-mode');
+            const isNightMode = document.body.classList.contains('night-mode');
+            localStorage.setItem('nightMode', isNightMode);
+            this.textContent = isNightMode ? '\u5173\u95ed\u591c\u95f4\u6a21\u5f0f' : '\u5f00\u542f\u591c\u95f4\u6a21\u5f0f';
+        });
+
+        document.getElementById('toggleAdMode').addEventListener('click', function() {
+            document.body.classList.toggle('no-ad-mode');
+            const isNoAd = document.body.classList.contains('no-ad-mode');
+            localStorage.setItem('noAdMode', isNoAd);
+            this.textContent = isNoAd ? '\u663e\u793a\u63d0\u793a' : '\u5f00\u542f\u65e0\u5e7f\u544a\u6a21\u5f0f';
+        });
+    </script>
+</body>
+</html>

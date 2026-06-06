@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>漫集社-找回密码</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: url("/static/images/Background.jpg") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+        }
+        .nav {
+            background-color: #fff;
+            padding: 18px 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4A90E2;
+            letter-spacing: 2px;
+        }
+        .nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #444;
+        }
+        .box {
+            width: 420px;
+            margin: 80px auto;
+            background: rgba(255,255,255,0.92);
+            padding:40px;
+            border-radius:14px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.12);
+        }
+        h2{
+            text-align:center;
+            color:#4A90E2;
+            margin-bottom:30px;
+        }
+        input{
+            width:100%;
+            padding:14px;
+            margin:10px 0;
+            border:1px solid #ddd;
+            border-radius:8px;
+            outline:none;
+        }
+        input:focus{border-color:#4A90E2;}
+        .btn{
+            width:100%;
+            padding:14px;
+            background:#4A90E2;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            margin-top:10px;
+        }
+        .back-login{
+            text-align:center;
+            margin-top:20px;
+        }
+        .back-login a{
+            color:#4A90E2;
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <span class="logo">漫集社</span>
+        <a href="/">返回首页</a>
+    </div>
+    <div class="box">
+        <h2>通过手机号重置密码</h2>
+        <form id="findPwdForm">
+            <input type="tel" name="phone" placeholder="注册时填写的手机号" required>
+            <input type="password" name="new_pwd" placeholder="设置新密码" required>
+            <button class="btn">确认重置密码</button>
+        </form>
+        <div class="back-login">
+            <a href="/login">返回登录</a>
+        </div>
+    </div>
+<script>
+const form = document.getElementById('findPwdForm');
+form.onsubmit = async e=>{
+    e.preventDefault();
+    const fd = new FormData(form);
+    const res = await fetch("/forget_pwd",{method:"POST",body:fd}).then(r=>r.json());
+    if(res.code===200){
+        alert("密码重置成功，请前往登录！");
+        location.href="/login";
+    }else{
+        alert(res.msg);
+    }
+}
+</script>
+</body>
+</html>
